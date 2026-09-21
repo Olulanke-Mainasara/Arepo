@@ -27,6 +27,13 @@ These apply to every task. Violations are task failures.
 - **All motion is wrapped in `gsap.matchMedia()`** with a `prefers-reduced-motion: reduce` branch that applies final state without animating.
 - Commit after every task. End commit messages with `Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>`.
 
+**Verifying prerendered HTML.** React serialises adjacent JSX expressions
+with `<!-- -->` separators, so `Certificate {n}` becomes
+`Certificate <!-- -->20042411` in the built file. Browsers and crawlers ignore
+these. When grepping built HTML, match a literal run of text from a single
+node — never across an interpolation boundary — or the check reports a false
+failure.
+
 **Environment note.** React Router 8.4 declares `engines.node >= 22.22.0`; the
 build machine runs 22.17.1. Every `npm install`, `typegen` and `build` therefore
 prints an `EBADENGINE` warning and a *"Oops, Node v22.17.1 detected"* banner.

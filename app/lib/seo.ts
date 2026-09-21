@@ -29,6 +29,17 @@ export function buildMeta({ title, description, path }: PageMeta) {
   ]
 }
 
+/**
+ * Serialises JSON-LD for injection into a <script> tag.
+ *
+ * Escaping `<` prevents a value containing "</script>" from closing the
+ * tag early. Today every value is a hardcoded constant, but this data is
+ * the first thing a CMS would start feeding, so the guard goes in now.
+ */
+export function jsonLdScript(data: object): string {
+  return JSON.stringify(data).replace(/</g, '\\u003c')
+}
+
 export function organizationJsonLd() {
   return {
     '@context': 'https://schema.org',
