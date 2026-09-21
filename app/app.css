@@ -62,3 +62,25 @@
 
   .prose { max-width: 68ch; }
 }
+
+@layer components {
+  /* Logo wall marquee. Duplicated content scrolls exactly half its width. */
+  .marquee {
+    animation: marquee-scroll 42s linear infinite;
+  }
+
+  .marquee:hover {
+    animation-play-state: paused;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .marquee {
+      animation: none;
+    }
+  }
+
+  @keyframes marquee-scroll {
+    from { transform: translate3d(0, 0, 0); }
+    to { transform: translate3d(-50%, 0, 0); }
+  }
+}

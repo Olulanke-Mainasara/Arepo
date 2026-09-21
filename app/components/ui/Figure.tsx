@@ -11,32 +11,46 @@ interface Props {
   slot: string
   className?: string
   priority?: boolean
+  /**
+   * Fill the positioned parent instead of reserving the declared ratio.
+   * For full-bleed backgrounds, where the section sets its own height and
+   * an aspect-ratio would fight it.
+   */
+  fill?: boolean
 }
 
-export function Figure({ slot, className = '', priority = false }: Props) {
+export function Figure({ slot, className = '', priority = false, fill = false }: Props) {
   const spec = imageSlots[slot]
   if (!spec) throw new Error(`Unknown image slot: ${slot}`)
+
+  const sizing = fill ? 'absolute inset-0 h-full w-full' : 'w-full'
+  const ratio = fill ? undefined : { aspectRatio: spec.ratio }
 
   if (spec.src) {
     return (
       <img
         src={spec.src}
-        alt={spec.alt}
+        alt={fill ? '' : spec.alt}
+        aria-hidden={fill || undefined}
         loading={priority ? 'eager' : 'lazy'}
         decoding="async"
-        className={`w-full object-cover ${className}`}
-        style={{ aspectRatio: spec.ratio }}
+        className={`object-cover ${sizing} ${className}`}
+        style={ratio}
       />
     )
   }
 
+  // Decorative backgrounds carry no alt — the heading over them says it.
+  const a11y = fill
+    ? { 'aria-hidden': true as const }
+    : { role: 'img', 'aria-label': spec.alt }
+
   return (
     <div
-      role="img"
-      aria-label={spec.alt}
+      {...a11y}
       data-image-placeholder={spec.key}
-      className={`w-full bg-navy-900 flex items-end p-4 ${className}`}
-      style={{ aspectRatio: spec.ratio }}
+      className={`bg-navy-900 flex items-end p-4 ${sizing} ${className}`}
+      style={ratio}
     >
       <span className="font-mono text-xs text-cyan-500/80 leading-snug">
         {spec.subject}
