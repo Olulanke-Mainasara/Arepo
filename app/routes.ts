@@ -7,4 +7,5 @@ export default [
   route('products/:slug', 'routes/product.tsx'),
   route('about', 'routes/about.tsx'),
   route('contact', 'routes/contact.tsx'),
+  route('*', 'routes/not-found.tsx'),
 ] satisfies RouteConfig
