@@ -21,7 +21,7 @@ site.
 | Build mode | UI-only, backend-ready. Typed fixtures, async content getters, mock form submit. No DB or infra. |
 | Brand scope | Straight modernisation. Wordmark and both brand hexes unchanged; only their *roles* change. |
 | Page scope | 9 routes: 5 original pages + a detail page per product. |
-| Stack | Stay in the existing Vite 8 / React 19 / React Compiler repo. Add React Router 8 + vite-react-ssg for per-route static HTML. |
+| Stack | Stay in the existing Vite 8 / React 19 repo. React Router 8 in **framework mode** (`@react-router/dev`) with `ssr: false` + `prerender`, for per-route static HTML. |
 | Styling | Tailwind 4 with a hand-authored `@theme` token layer. |
 | Direction | "Infrastructure software" — minimalistic/saas, after Neon, Supabase, Conntour. |
 | IA | Sector-led entry, platform-backed proof. |
@@ -112,7 +112,11 @@ scroll-jacking, parallax. Procurement buyers skim.
 `Button` (solid navy / outline / cyan-on-navy), `Link`, `SectionHeading`
 (two-tone), `StatFigure`, `ProductCard`, `SectorCard`, `LogoWall`, `FeatureRow`,
 `Accordion`, `TestimonialCarousel`, `Breadcrumb`, `Field`, `Figure`
-(placeholder-aware), `Nav` (desktop + mobile drawer), `Footer`, `Seo`.
+(placeholder-aware), `Nav` (desktop + mobile drawer), `Footer`.
+
+No `<Seo>` component: React Router framework mode supplies per-route `meta`
+exports, rendered by `<Meta />` in `root.tsx`. `lib/seo.ts` provides the
+builders those exports call.
 
 ## 4. Information architecture
 
@@ -275,21 +279,31 @@ Vauxhall, London SE11 5JH · nearest station Vauxhall.
 
 ## 6. Architecture
 
+React Router framework mode dictates the top-level shape: an `app/` directory,
+`app/root.tsx` as the HTML shell, and `app/routes.ts` as the route manifest.
+
 ```text
-src/
-  data/         products.ts sectors.ts clients.ts services.ts
-                testimonials.ts caseStudies.ts company.ts
-                navigation.ts    nav + footer, incl. deferred destinations
-                images.ts        image manifest
-                types.ts
-  lib/          content.ts       getProducts/getProductBySlug — all async
-                contact.ts       submitContactForm(): Promise<Result>
-                seo.ts
-  components/   ui/  sections/
-  routes/       Home Services Products ProductDetail About Contact NotFound
-  styles/       theme.css  global.css
-  App.tsx  main.tsx  routes.tsx
+react-router.config.ts    ssr: false, prerender: [9 paths]
+vite.config.ts            tailwindcss() + reactRouter() + babel()
+app/
+  root.tsx                html shell, <Meta>/<Links>, ErrorBoundary
+  routes.ts               route manifest
+  app.css                 tailwind entry + @theme token layer
+  routes/                 home services products product about contact
+  data/                   products sectors clients services testimonials
+                          caseStudies company navigation images types
+  lib/                    content.ts  getProducts/getProductBySlug — async
+                          contact.ts  submitContactForm(): Promise<Result>
+                          seo.ts
+  components/             ui/  sections/
 ```
+
+Route data arrives through React Router `loader` exports rather than
+component-level fetching. This is load-bearing: under `ssr: false` a `loader`
+is only permitted on a route that is pre-rendered — which all nine are — and it
+runs **at build time**, so the emitted HTML contains real content rather than a
+loading state. Component-level `await` would have prerendered nine pages of
+spinners.
 
 ### The backend-ready seam
 
@@ -312,18 +326,35 @@ layout shift.
 
 ### Dependencies added
 
-`react-router@8`, `vite-react-ssg`, `tailwindcss@4`, `@tailwindcss/vite`,
-`gsap`, `@fontsource-variable/archivo`, `@fontsource-variable/geist-mono`.
+Runtime: `react-router@8`, `@react-router/node@8`, `gsap@3`,
+`@fontsource-variable/archivo@5`, `@fontsource-variable/geist-mono@5`.
+Build: `@react-router/dev@8`, `tailwindcss@4`, `@tailwindcss/vite@4`.
 
-Nothing else. The existing React Compiler, oxlint and TypeScript config stay as
-they are.
+Not added: `@react-router/serve` and `isbot`, which the official template
+carries only for a runtime server. With `ssr: false` there is no server.
+
+`vite-react-ssg` was evaluated and rejected — it peers on
+`react-router-dom@^6.14.1`, a package React Router 7 merged away, and its own
+README directs v7+ users to React Router's built-in pre-rendering.
+
+**React Compiler is at risk.** `reactRouter()` performs its own JSX transform
+and exposes no Babel escape hatch, so the compiler cannot be configured through
+it. The repo's existing `@rolldown/plugin-babel` runs as a *standalone* plugin
+rather than nested inside `@vitejs/plugin-react`, so it may continue to work
+alongside `reactRouter()`. Task 1 verifies this empirically. If the two
+conflict, React Compiler is dropped, `@rolldown/plugin-babel`,
+`babel-plugin-react-compiler` and `@babel/core` are removed, and that is
+recorded — the redesign does not depend on it.
+
+oxlint and the TypeScript config stay, with tsconfig extended for the
+`.react-router/types` generated directory and the `~/*` path alias.
 
 ## 7. SEO
 
-Every route prerenders to static HTML via vite-react-ssg. Per-route title,
-description, canonical and Open Graph tags come from `lib/seo.ts`. JSON-LD:
-`Organization` sitewide, `SoftwareApplication` per product page. `sitemap.xml`
-and `robots.txt` generated at build.
+All nine routes prerender to static HTML. Per-route title, description,
+canonical and Open Graph tags come from each route's `meta` export, built by
+helpers in `lib/seo.ts`. JSON-LD: `Organization` sitewide, `SoftwareApplication`
+per product page. `sitemap.xml` and `robots.txt` are emitted into `public/`.
 
 The current site carries a Google Translate widget on every page, indicating
 international search matters to Arepo. Static HTML per route serves that; a
@@ -333,9 +364,11 @@ client-rendered SPA would not.
 
 No test suite. Each stage verified by:
 
-- `npx tsc -b` — clean
-- `npm run lint` — clean
-- `npm run build` — succeeds and emits nine HTML files plus 404
+- `npm run typecheck` (`react-router typegen && tsc`) — clean
+- `npm run lint` (oxlint) — clean
+- `npm run build` (`react-router build`) — succeeds and emits nine `.html`
+  files under `build/client`, each containing real rendered copy rather than a
+  loading state. Verified by grepping the built HTML for page-specific text.
 - Contrast ratios in §3.1 recomputed and asserted against the shipped token
   values
 - Manual check at 375px, 768px, 1440px
