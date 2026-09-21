@@ -27,6 +27,21 @@ These apply to every task. Violations are task failures.
 - **All motion is wrapped in `gsap.matchMedia()`** with a `prefers-reduced-motion: reduce` branch that applies final state without animating.
 - Commit after every task. End commit messages with `Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>`.
 
+**Verifying prerendered HTML.** React serialises adjacent JSX expressions
+with `<!-- -->` separators, so `Certificate {n}` becomes
+`Certificate <!-- -->20042411` in the built file. Browsers and crawlers ignore
+these. When grepping built HTML, match a literal run of text from a single
+node — never across an interpolation boundary — or the check reports a false
+failure.
+
+**Environment note.** React Router 8.4 declares `engines.node >= 22.22.0`; the
+build machine runs 22.17.1. Every `npm install`, `typegen` and `build` therefore
+prints an `EBADENGINE` warning and a *"Oops, Node v22.17.1 detected"* banner.
+**These are warnings only** — typegen emits types and the build prerenders all
+nine routes correctly. Ignore them, and do not "fix" them by downgrading React
+Router. Upgrading Node to 22.22+ silences them and is worth doing before
+handing the repo to the client.
+
 ## File Structure
 
 | File | Responsibility |
@@ -130,13 +145,25 @@ export default defineConfig({
 }
 ```
 
-- [ ] **Step 5: Update `tsconfig.app.json`**
+- [ ] **Step 5: Collapse to a single `tsconfig.json`**
 
-Add the generated types directory, the path alias, and `rootDirs`. Keep the existing `strict` settings.
+Delete `tsconfig.app.json` and `tsconfig.node.json`. The starter's
+project-reference split fights framework mode: plain `tsc` does not build
+references (it needs `tsc -b`), and `composite` conflicts with `noEmit`. The
+React Router template uses one config; match it.
+
+Do **not** set `baseUrl` — TypeScript 6 deprecates it and errors with TS5101.
+`paths` resolves relative to the tsconfig without it.
 
 ```json
 {
-  "include": ["app/**/*", ".react-router/types/**/*"],
+  "include": [
+    "app/**/*",
+    "scripts/**/*",
+    "vite.config.ts",
+    "react-router.config.ts",
+    ".react-router/types/**/*"
+  ],
   "compilerOptions": {
     "lib": ["DOM", "DOM.Iterable", "ES2022"],
     "types": ["node", "vite/client"],
@@ -151,7 +178,10 @@ Add the generated types directory, the path alias, and `rootDirs`. Keep the exis
     "resolveJsonModule": true,
     "skipLibCheck": true,
     "noEmit": true,
-    "strict": true
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noFallthroughCasesInSwitch": true
   }
 }
 ```
@@ -213,18 +243,35 @@ export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
 }
 ```
 
-- [ ] **Step 9: Write `app/routes.ts` and a placeholder home route**
+- [ ] **Step 9: Write `app/routes.ts` and stub every route**
+
+All six route files must exist now, not later. `prerender` validates its
+paths against the route manifest at build time, so listing nine paths against
+a single index route fails with *"Unable to prerender path because it does not
+match any routes"*. Tasks 8–13 fill these stubs in.
 
 ```ts
-import { type RouteConfig, index } from '@react-router/dev/routes'
+import { type RouteConfig, index, route } from '@react-router/dev/routes'
 
-export default [index('routes/home.tsx')] satisfies RouteConfig
+export default [
+  index('routes/home.tsx'),
+  route('services', 'routes/services.tsx'),
+  route('products', 'routes/products.tsx'),
+  route('products/:slug', 'routes/product.tsx'),
+  route('about', 'routes/about.tsx'),
+  route('contact', 'routes/contact.tsx'),
+] satisfies RouteConfig
 ```
 
+Each of `home`, `services`, `products`, `about`, `contact` is a one-line
+component returning its name in an `<h1>`. `product.tsx` echoes the param:
+
 ```tsx
-// app/routes/home.tsx
-export default function Home() {
-  return <h1>Arepo</h1>
+// app/routes/product.tsx
+import type { Route } from './+types/product'
+
+export default function Product({ params }: Route.ComponentProps) {
+  return <h1>{params.slug}</h1>
 }
 ```
 
@@ -248,7 +295,17 @@ grep -c "<h1>Arepo</h1>" build/client/index.html
 
 Expected: `1`. If it prints `0`, prerendering is not producing content — stop and diagnose before continuing.
 
-**If the build fails with a Babel/transform error**, the React Compiler bet has lost. Remove `babel()` and its import from `vite.config.ts`, then:
+Confirm React Compiler survived:
+
+```bash
+ls build/client/assets/ | grep -i compiler
+```
+
+Expected: a `compiler-runtime-*.js` asset. **Outcome when this plan was
+executed: it survived.** Keeping `babel()` as a standalone plugin rather than
+nesting it inside `@vitejs/plugin-react` is what made that work.
+
+**If instead the build fails with a Babel/transform error**, the bet has lost. Remove `babel()` and its import from `vite.config.ts`, then:
 
 ```bash
 npm uninstall @rolldown/plugin-babel babel-plugin-react-compiler @babel/core @types/babel__core
@@ -1516,7 +1573,7 @@ Five rows, each with the step number in `font-mono` at `--text-display` in `cyan
 
 ```bash
 npm run typecheck && npm run lint && npm run build
-grep -o "initial consultancy and system development" build/client/services.html
+grep -o "initial consultancy and system development" build/client/services/index.html
 git add -A
 git commit -m "Build the services route
 
@@ -1553,7 +1610,7 @@ Below `md` the table scrolls horizontally inside a `<div role="region" aria-labe
 
 ```bash
 npm run typecheck && npm run lint && npm run build
-grep -o "Module groups" build/client/products.html
+grep -o "Module groups" build/client/products/index.html
 git add -A
 git commit -m "Build the products index with a comparison table
 
@@ -1611,9 +1668,9 @@ Render `softwareApplicationJsonLd(product)` in a `<script type="application/ld+j
 ```bash
 npm run typecheck && npm run lint && npm run build
 for s in tracerit inkara goss cautus; do
-  test -f "build/client/products/$s.html" && echo "$s OK" || echo "$s MISSING"
+  test -f "build/client/products/$s/index.html" && echo "$s OK" || echo "$s MISSING"
 done
-grep -c "Software for Train and Bus Revenue Protection" build/client/products/inkara.html
+grep -c "Software for Train and Bus Revenue Protection" build/client/products/inkara/index.html
 ```
 
 Expected: four `OK` lines, and the Inkara grep prints at least `1`.
@@ -1664,7 +1721,7 @@ A short band linking to `/contact`, not to a careers route — that page is out 
 
 ```bash
 npm run typecheck && npm run lint && npm run build
-grep -o "Formed in London in 1998" build/client/about.html
+grep -o "Formed in London in 1998" build/client/about/index.html
 git add -A
 git commit -m "Build the about route
 
@@ -1721,8 +1778,8 @@ The consent checkbox label links to `company.privacyPolicyHref`, which points at
 
 ```bash
 npm run typecheck && npm run lint && npm run build
-grep -o 'name="website"' build/client/contact.html && echo "honeypot present"
-grep -c "captcha" build/client/contact.html
+grep -o 'name="website"' build/client/contact/index.html && echo "honeypot present"
+grep -c "captcha" build/client/contact/index.html
 ```
 
 Expected: honeypot present; captcha count `0`.
@@ -1782,7 +1839,7 @@ Render `organizationJsonLd()` once in `root.tsx`.
 
 ```bash
 npm run typecheck && npm run lint && npm run check:contrast && npm run build
-ls build/client/*.html build/client/products/*.html | wc -l   # expect 9
+find build/client -name 'index.html' | wc -l                  # expect 9
 test -f build/client/sitemap.xml && echo "sitemap OK"
 grep -rl "loading\.\.\." build/client --include=*.html || echo "no loading states prerendered"
 ```
