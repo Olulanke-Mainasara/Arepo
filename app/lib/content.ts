@@ -1,6 +1,7 @@
 import { caseStudies } from '~/data/caseStudies'
 import { clients } from '~/data/clients'
 import { company } from '~/data/company'
+import { offerings } from '~/data/offerings'
 import { products } from '~/data/products'
 import { sectors } from '~/data/sectors'
 import { capabilities, guarantees, processSteps, servicePillars } from '~/data/services'
@@ -11,6 +12,7 @@ import type {
   Client,
   Company,
   Guarantee,
+  Offering,
   ProcessStep,
   Product,
   Sector,
@@ -23,7 +25,7 @@ import type {
  *
  * Every getter is async despite resolving a local array. Route loaders
  * await them, so replacing these bodies with real fetches changes this
- * file and nothing else — no component signature moves.
+ * file and nothing else. No component signature moves.
  */
 
 export async function getProducts(): Promise<Product[]> {
@@ -40,6 +42,10 @@ export async function getSectors(): Promise<Sector[]> {
 
 export async function getClients(): Promise<Client[]> {
   return clients
+}
+
+export async function getOfferings(): Promise<Offering[]> {
+  return offerings
 }
 
 export async function getServicePillars(): Promise<ServicePillar[]> {

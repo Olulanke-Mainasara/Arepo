@@ -36,7 +36,7 @@ export function Accordion({ items, defaultOpenId, exclusive = false, tone = 'lig
             <span>{item.title}</span>
             <span
               aria-hidden="true"
-              className={`font-mono shrink-0 transition-transform duration-200 group-open:rotate-45 ${marker}`}
+              className={`shrink-0 transition-transform duration-200 group-open:rotate-45 ${marker}`}
             >
               +
             </span>

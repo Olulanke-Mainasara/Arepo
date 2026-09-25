@@ -19,7 +19,7 @@ export function PageHero({
   children?: ReactNode
 }) {
   return (
-    <section className="on-dark bg-navy-900 py-16 text-white lg:py-20">
+    <section className="on-dark bg-navy-900 pt-[calc(var(--header-h)+4rem)] pb-16 text-white lg:pt-[calc(var(--header-h)+5rem)] lg:pb-20">
       <Container>
         {trail && (
           <div className="mb-8">

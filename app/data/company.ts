@@ -14,16 +14,27 @@ export const company: Company = {
   phone: '+44 (0)20 7280 4390',
   phoneHref: 'tel:+442072804390',
   address: {
-    street: 'Unit W107, Vox Studios, 1–45 Durham Street',
+    street: 'Unit W107, Vox Studios, 1-45 Durham Street',
     locality: 'Vauxhall',
     region: 'London',
     postcode: 'SE11 5JH',
     country: 'United Kingdom',
   },
-  nearestStation: 'Vauxhall',
+  directions:
+    'Our office is conveniently located between Vauxhall train, underground and bus station, and Oval underground station.',
+  supportEmail: 'support@arepo.com',
   accreditation: { standard: 'ISO 9001:2015', certificateNumber: '20042411' },
-  privacyPolicyHref: 'https://www.arepo.co.uk/privacy',
+  // The live site's policy page. arepo.co.uk fails TLS, so link arepo.com.
+  privacyPolicyHref: 'https://www.arepo.com/about-us/privacy',
 }
 
 export const yearsTrading = (now = new Date()): number =>
   now.getFullYear() - company.foundedYear
+
+/** The stat band's figures: only facts the live site states. */
+export const companyStats = (productCount: number) => [
+  { value: String(yearsTrading()), label: 'Years trading' },
+  { value: String(company.foundedYear), label: 'Formed in London' },
+  { value: company.accreditation.standard, label: 'Registered' },
+  { value: String(productCount), label: 'Software as a Service products' },
+]

@@ -11,7 +11,7 @@ export function Breadcrumb({ trail, tone = 'light' }: { trail: Crumb[]; tone?: '
 
   return (
     <nav aria-label="Breadcrumb">
-      <ol className="flex flex-wrap items-center gap-x-2 gap-y-1 font-mono text-xs">
+      <ol className="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs">
         {trail.map((crumb, i) => {
           const isLast = i === trail.length - 1
           return (

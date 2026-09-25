@@ -17,15 +17,15 @@ export default function Contact() {
   return (
     <>
       <PageHero
-        title="Tell us what your operation needs."
-        lead="Use the form below to get in touch with Arepo Solutions, or call us directly — whichever is faster for you."
+        title="Contact Us"
+        lead="Please use the contact form below to get in touch with Arepo Solutions."
         trail={[{ label: 'Home', to: '/' }, { label: 'Contact Us' }]}
       />
 
       <section className="bg-paper py-16 lg:py-24">
         <Container>
           <div className="grid gap-10 lg:grid-cols-[1fr_24rem] lg:gap-14 lg:items-start">
-            <div className="bg-white p-8 lg:p-10">
+            <div className="rounded-3xl bg-white p-8 lg:p-10">
               <ContactForm />
             </div>
             <ContactDetails />

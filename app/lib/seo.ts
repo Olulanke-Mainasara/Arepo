@@ -1,7 +1,7 @@
 import { company } from '~/data/company'
 import type { Product } from '~/data/types'
 
-export const SITE_URL = 'https://www.arepo.co.uk'
+export const SITE_URL = 'https://www.arepo.com'
 
 export interface PageMeta {
   title: string
@@ -13,8 +13,8 @@ export function buildMeta({ title, description, path }: PageMeta) {
   const url = `${SITE_URL}${path}`
   const full =
     path === '/'
-      ? `${company.legalName} — ${company.tagline}`
-      : `${title} — ${company.name}`
+      ? `${company.legalName} | ${company.tagline}`
+      : `${title} | ${company.name}`
 
   return [
     { title: full },

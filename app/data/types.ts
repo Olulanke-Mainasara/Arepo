@@ -24,14 +24,24 @@ export interface Product {
 export interface Sector {
   id: SectorId
   name: string
-  problem: string
-  primary: ProductSlug
-  secondary?: ProductSlug
 }
 
 export interface Client {
   name: string
   note: string
+  /**
+   * The logo as served on the live site, at its native pixel size, and
+   * `mono`, the same pixels as a white-on-transparent PNG for dark tiles.
+   */
+  logo: { src: string; mono: string; width: number; height: number }
+}
+
+/** One of the three columns under the live home page's introduction. */
+export interface Offering {
+  id: string
+  title: string
+  image: ImageKey
+  items: { label: string; to?: string }[]
 }
 
 export interface Guarantee {
@@ -53,9 +63,11 @@ export interface ProcessStep {
 export interface ServicePillar {
   id: string
   title: string
-  body: string
+  body: string[]
+  /** The sentence that introduces `points` on the live page. */
+  pointsIntro: string
   points: string[]
-  image: ImageKey
+  closing?: string
 }
 
 export interface Testimonial {
@@ -66,10 +78,11 @@ export interface Testimonial {
 
 export interface CaseStudy {
   id: string
+  /** The kind of work, from the live case study's heading. */
+  kind: string
   title: string
   summary: string
   sector: SectorId
-  image: ImageKey
 }
 
 export interface NavItem {
@@ -100,7 +113,9 @@ export interface Company {
     postcode: string
     country: string
   }
-  nearestStation: string
+  /** How to find the office, from the live "How to find us" page. */
+  directions: string
+  supportEmail: string
   accreditation: { standard: string; certificateNumber: string }
   privacyPolicyHref: string
 }

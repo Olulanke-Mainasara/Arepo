@@ -1,105 +1,69 @@
 import type { ImageSlot } from './types'
 
 /**
- * The image manifest. No photography has been sourced for this build.
+ * The image manifest.
  *
- * Each slot declares the aspect ratio it reserves, the subject a real photo
- * should show, and the alt text that ships with it. <Figure> renders a flat
- * navy placeholder at the declared ratio while `src` is undefined, so adding
- * a real file later causes no layout shift.
+ * Each slot declares the aspect ratio it reserves, what the image shows,
+ * and the alt text that ships with it. <Figure> still renders a flat navy
+ * placeholder at the declared ratio for a slot without `src`, so a new
+ * slot can be laid out before its image arrives.
  *
- * To add real photography: drop the file in app/assets/, import it, and set
- * `src` on the matching slot. Nothing else changes.
+ * The home offering photos are Unsplash photographs (Unsplash License,
+ * free for commercial use), cropped square at 1200px. The product banners
+ * are the live site's own, 465×156 with text set into them; replace them
+ * with larger originals when the client can supply them.
  */
 export const imageSlots: Record<string, ImageSlot> = {
-  'home.hero': {
-    key: 'home.hero',
-    ratio: '16 / 9',
-    subject: 'Bus depot at dusk, vehicles parked in rows, interior lights on',
-    alt: 'A bus depot at dusk with vehicles parked in rows',
+  // Unsplash 77MVcLrz2MU, by Intrepid
+  'home.expertise': {
+    key: 'home.expertise',
+    ratio: '1 / 1',
+    subject: 'A red London double-decker bus at night, bound for Clapham Junction',
+    alt: 'A red London double-decker bus at night, bound for Clapham Junction',
+    src: '/images/home/expertise-bus-night.jpg',
   },
-  'home.platform': {
-    key: 'home.platform',
-    ratio: '4 / 3',
-    subject: 'Operations control room, staff at multi-screen workstations',
-    alt: 'An operations control room with staff at multi-screen workstations',
+  // Unsplash fYcF0JlMz6g, by Raul Gonzalez Escobar
+  'home.products-for': {
+    key: 'home.products-for',
+    ratio: '1 / 1',
+    subject: 'An airliner nose-on above the chevrons of its pushback tug, under a blue sky',
+    alt: 'An airliner on the apron, coupled to its pushback tug',
+    src: '/images/home/products-aircraft-pushback.jpg',
+  },
+  // Unsplash zFYUsLk_50Y, by Massimo Botturi
+  'home.online-databases': {
+    key: 'home.online-databases',
+    ratio: '1 / 1',
+    subject: 'A server rack in a data centre, patched with blue cables and lit by green status lights',
+    alt: 'A data centre server rack, patched with blue cables',
+    src: '/images/home/online-databases-server-rack.jpg',
   },
   'product.tracerit': {
     key: 'product.tracerit',
-    ratio: '21 / 9',
-    subject: 'Double-decker buses in city traffic',
-    alt: 'Double-decker buses in city traffic',
+    ratio: '465 / 156',
+    subject: 'A double-decker bus in city traffic, designed for public transport, bus, coach, taxi and minicab, and rail',
+    alt: 'Tracerit, designed for public transport, bus, coach, taxi and minicab, and rail',
+    src: '/images/products/tracerit.jpg',
   },
   'product.inkara': {
     key: 'product.inkara',
-    ratio: '21 / 9',
-    subject: 'Multi-storey car park deck with marked bays',
-    alt: 'A multi-storey car park deck with marked bays',
+    ratio: '465 / 156',
+    subject: 'A car park, with solutions for car park operators, airport and valet parking, retail parking, integrated transport and park and ride',
+    alt: 'Inkara, solutions for car park operators, airport car parking, valet parking operators, retail parking, integrated transport and park and ride',
+    src: '/images/products/inkara.jpg',
   },
   'product.goss': {
     key: 'product.goss',
-    ratio: '21 / 9',
-    subject: 'Airport apron, ground crew loading baggage beside an aircraft',
-    alt: 'Ground crew loading baggage beside an aircraft on an airport apron',
+    ratio: '465 / 156',
+    subject: 'Ground crew loading baggage on an airport apron, with the GOSS applications listed',
+    alt: 'GOSS applications: accidents and incidents, ISAGO auditing, delay reporting, voucher redemption and airside transfers',
+    src: '/images/products/goss.jpg',
   },
   'product.cautus': {
     key: 'product.cautus',
-    ratio: '21 / 9',
-    subject: 'Law office desk with document files and a laptop',
-    alt: 'Document files and a laptop on a law office desk',
-  },
-  'service.databases': {
-    key: 'service.databases',
-    ratio: '3 / 2',
-    subject: 'Close-up of a database schema on a monitor',
-    alt: 'A database schema displayed on a monitor',
-  },
-  'service.bespoke': {
-    key: 'service.bespoke',
-    ratio: '3 / 2',
-    subject: 'Two people reviewing a process diagram on a whiteboard',
-    alt: 'Two people reviewing a process diagram on a whiteboard',
-  },
-  'service.legacy': {
-    key: 'service.legacy',
-    ratio: '3 / 2',
-    subject: 'Server rack in a small comms room',
-    alt: 'A server rack in a small comms room',
-  },
-  'service.cms': {
-    key: 'service.cms',
-    ratio: '3 / 2',
-    subject: 'A public transport information web page on a tablet',
-    alt: 'A public transport information web page displayed on a tablet',
-  },
-  'about.story': {
-    key: 'about.story',
-    ratio: '4 / 3',
-    subject: 'Exterior of a London office building in Vauxhall',
-    alt: 'The exterior of a London office building',
-  },
-  'case.bespoke': {
-    key: 'case.bespoke',
-    ratio: '3 / 2',
-    subject: 'Depot office with staff at desks',
-    alt: 'A depot office with staff working at desks',
-  },
-  'case.legacy': {
-    key: 'case.legacy',
-    ratio: '3 / 2',
-    subject: 'Railway platform with a departure board',
-    alt: 'A railway platform with a departure board',
-  },
-  'case.aviation': {
-    key: 'case.aviation',
-    ratio: '3 / 2',
-    subject: 'Baggage handling belt loader beside an aircraft',
-    alt: 'A baggage handling belt loader beside an aircraft',
-  },
-  'contact.location': {
-    key: 'contact.location',
-    ratio: '4 / 3',
-    subject: 'Street map of the Vauxhall area of London',
-    alt: 'A street map of the Vauxhall area of London',
+    ratio: '465 / 156',
+    subject: 'A dictionary definition of intellectual property, with the Cautus applications listed',
+    alt: 'Cautus applications: trade marks, design registrations, domain names and other marks',
+    src: '/images/products/cautus.jpg',
   },
 }

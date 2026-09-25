@@ -7,6 +7,12 @@ import { Container } from '~/components/ui/Container'
 import { jsonLdScript, organizationJsonLd } from '~/lib/seo'
 import './app.css'
 
+/** The live site's favicon: the square full stop from the wordmark. */
+export const links: Route.LinksFunction = () => [
+  { rel: 'icon', href: '/favicon.ico', sizes: '32x32' },
+  { rel: 'icon', href: '/favicon.svg', type: 'image/svg+xml' },
+]
+
 export function Layout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en-GB">
@@ -46,23 +52,28 @@ export default function App() {
 export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
   const is404 = isRouteErrorResponse(error) && error.status === 404
 
+  // Dark, like every other page top, so the transparent header reads over it.
   return (
-    <Container className="py-24">
-      <p className="font-mono text-xs text-cyan-700">{is404 ? '404' : 'Error'}</p>
-      <h1 className="mt-4 text-h1 text-navy-800 max-w-[18ch]">
-        {is404 ? 'That page isn’t here.' : 'Something went wrong.'}
-      </h1>
-      <p className="mt-4 text-lead text-navy-600 max-w-[52ch]">
-        {is404
-          ? 'The page you asked for doesn’t exist. It may have moved, or the link may be out of date.'
-          : 'Sorry — an unexpected error occurred. Please try again, or call us.'}
-      </p>
-      <div className="mt-8 flex flex-wrap gap-4">
-        <Button to="/">Back to home</Button>
-        <Button to="/products" variant="outline">
-          Browse products
-        </Button>
-      </div>
-    </Container>
+    <section className="on-dark bg-navy-950 pt-[calc(var(--header-h)+6rem)] pb-24 text-white">
+      <Container>
+        <p className="text-xs text-cyan-500">{is404 ? '404' : 'Error'}</p>
+        <h1 className="mt-4 text-h1 max-w-[18ch]">
+          {is404 ? 'That page isn’t here.' : 'Something went wrong.'}
+        </h1>
+        <p className="mt-4 text-lead text-white/70 max-w-[52ch]">
+          {is404
+            ? 'The page you asked for doesn’t exist. It may have moved, or the link may be out of date.'
+            : 'Sorry, an unexpected error occurred. Please try again, or call us.'}
+        </p>
+        <div className="mt-8 flex flex-wrap gap-4">
+          <Button to="/" variant="on-navy">
+            Back to home
+          </Button>
+          <Button to="/products" variant="ghost-on-navy">
+            Browse products
+          </Button>
+        </div>
+      </Container>
+    </section>
   )
 }

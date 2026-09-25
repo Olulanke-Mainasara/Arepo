@@ -43,7 +43,7 @@ export const meta: Route.MetaFunction = ({ loaderData }) => {
 
   const { product } = loaderData
   return buildMeta({
-    title: `${product.name} — ${product.tagline}`,
+    title: `${product.name}: ${product.tagline}`,
     description: product.summary,
     path: `/products/${product.slug}`,
   })
@@ -79,7 +79,7 @@ export default function Product({ loaderData }: Route.ComponentProps) {
             {served.map(sector => (
               <li
                 key={sector.id}
-                className="border border-white/30 px-2 py-1 font-mono text-xs text-white/70"
+                className="rounded-full border border-white/30 px-3 py-1 text-xs text-white/70"
               >
                 {sector.name}
               </li>
@@ -88,21 +88,29 @@ export default function Product({ loaderData }: Route.ComponentProps) {
         </div>
       </PageHero>
 
-      <Figure slot={product.image} priority />
-
       <section className="bg-white py-16 lg:py-24">
         <Container>
-          <p className="max-w-[56ch] text-lead text-navy-800">{product.summary}</p>
+          <div className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,29rem)] lg:items-center lg:gap-16">
+            <div>
+              <p className="max-w-[40ch] text-h3 text-navy-800">{product.summary}</p>
+              <p className="mt-6 text-base text-navy-600">
+                <span className="font-medium text-navy-800">For more information</span>{' '}
+                about {product.name.replace('®', '')} please visit{' '}
+                <a
+                  href={product.site.href}
+                  rel="noreferrer"
+                  target="_blank"
+                  className="text-cyan-700 underline underline-offset-4 hover:text-navy-800"
+                >
+                  www.{product.site.label}
+                </a>
+              </p>
+            </div>
+            <Figure slot={product.image} priority className="max-w-[465px] rounded-2xl lg:justify-self-end" />
+          </div>
 
-          <div className="mt-12">
-            <SectionHeading
-              lead="What it does."
-              rest={
-                product.moduleGroups.length > 1
-                  ? 'Grouped by the operation it serves.'
-                  : 'Module by module.'
-              }
-            />
+          <div className="mt-16">
+            <SectionHeading lead={`${product.name.replace('®', '')} modules.`} rest={product.tagline} />
 
             <div className="mt-8">
               <Accordion
@@ -129,34 +137,13 @@ export default function Product({ loaderData }: Route.ComponentProps) {
         </Container>
       </section>
 
-      <section className="bg-paper py-16 lg:py-24">
-        <Container>
-          <SectionHeading lead="Who it is for." rest="The operations running it today." />
-          <div className="mt-8 grid gap-px bg-navy-800/15 sm:grid-cols-2 lg:grid-cols-3">
-            {served.map(sector => (
-              <div key={sector.id} className="bg-paper p-6">
-                <h3 className="text-h3 text-navy-800">{sector.name}</h3>
-                <p className="mt-2 text-base text-navy-600">{sector.problem}</p>
-              </div>
-            ))}
-          </div>
-        </Container>
-      </section>
-
       {caseStudy && (
         <section className="bg-white py-16 lg:py-24">
           <Container>
-            <div className="grid items-center gap-10 border border-navy-800/15 p-8 lg:grid-cols-2 lg:gap-14">
-              <Figure slot={caseStudy.image} />
-              <div>
-                <p className="font-mono text-xs text-cyan-700">Case study</p>
-                <h2 className="mt-3 text-h2 text-navy-800 max-w-[18ch]">
-                  {caseStudy.title}
-                </h2>
-                <p className="mt-4 max-w-[52ch] text-base text-navy-600">
-                  {caseStudy.summary}
-                </p>
-              </div>
+            <div className="rounded-3xl border border-navy-800/15 p-8 lg:p-12">
+              <p className="text-sm text-cyan-700">Case study: {caseStudy.kind}</p>
+              <h2 className="mt-3 max-w-[18ch] text-h2 text-navy-800">{caseStudy.title}</h2>
+              <p className="mt-4 max-w-[60ch] text-lead text-navy-600">{caseStudy.summary}</p>
             </div>
           </Container>
         </section>
@@ -174,7 +161,7 @@ export default function Product({ loaderData }: Route.ComponentProps) {
               >
                 <h3 className="text-h3 text-navy-800">{other.name}</h3>
                 <p className="mt-2 text-base text-navy-600">{other.tagline}</p>
-                <p className="mt-4 font-mono text-xs text-cyan-700 group-hover:underline">
+                <p className="mt-4 text-xs text-cyan-700 group-hover:underline">
                   Read more &rarr;
                 </p>
               </Link>
@@ -184,8 +171,8 @@ export default function Product({ loaderData }: Route.ComponentProps) {
       </section>
 
       <FinalCta
-        lead={`Want to see ${product.name} against your own data?`}
-        rest="We will walk you through it."
+        lead="Please contact Arepo for further information"
+        rest={`or to arrange a demonstration of ${product.name.replace('®', '')}.`}
       />
     </>
   )

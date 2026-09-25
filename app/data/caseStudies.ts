@@ -1,25 +1,29 @@
 import type { CaseStudy } from './types'
 
+/** Summaries are the opening sentences of the live case study pages. */
 export const caseStudies: CaseStudy[] = [
   {
     id: 'bespoke-software',
-    title: 'Bespoke software',
-    summary: 'A tailor-made database system built around an operator’s own business rules rather than adapted to someone else’s.',
-    sector: 'bus-coach',
-    image: 'case.bespoke',
+    kind: 'Bespoke software development',
+    title: 'Meteor Parking Ltd',
+    summary:
+      'Meteor Parking, a leader in the UK car park industry, required an online e-commerce solution to sell permits and other tickets at train station car parks.',
+    sector: 'parking-enforcement',
   },
   {
     id: 'legacy-upgrade',
-    title: 'Legacy software upgrade',
-    summary: 'Replacing an unsupported legacy system without losing the data or the process built around it.',
+    kind: 'Legacy upgrade',
+    title: 'Revenue Protection Support Services',
+    summary:
+      'Arepo have developed a new online database for Revenue Protection Support Services, a subsidiary of Southeastern Railway, to help manage the collection of train companies’ ticket revenues.',
     sector: 'rail',
-    image: 'case.legacy',
   },
   {
     id: 'dnata-uk',
-    title: 'Aviation services — dnata UK',
-    summary: 'Ground operations software supporting ISAGO accreditation across a UK ground handling operation.',
+    kind: 'Airport operations audits and checklists',
+    title: 'dnata UK',
+    summary:
+      'The UK operations of dnata began recording and managing all incidents using the Incident and Accident Management GOSS modules in 2010.',
     sector: 'aviation',
-    image: 'case.aviation',
   },
 ]

@@ -7,7 +7,7 @@ import { join, relative } from 'node:path'
  * output rather than a hand-kept list means the sitemap cannot claim a
  * URL that does not exist, or miss one that does.
  */
-const SITE_URL = 'https://www.arepo.co.uk'
+const SITE_URL = 'https://www.arepo.com'
 const ROOT = new URL('../build/client', import.meta.url).pathname
 
 function walk(dir, found = []) {

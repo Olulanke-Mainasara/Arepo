@@ -1,65 +1,48 @@
-import { Link } from 'react-router'
-import { Button } from '~/components/ui/Button'
-import { Container } from '~/components/ui/Container'
-import { Figure } from '~/components/ui/Figure'
-import type { Sector } from '~/data/types'
+import { useRef } from "react";
+import { Container } from "~/components/ui/Container";
+import { Pill } from "~/components/ui/Pill";
+import { Ribbon } from "~/components/ui/Ribbon";
+import { WordmarkType } from "~/components/ui/Wordmark";
+import { useDrift } from "~/lib/motion";
 
 /**
- * Full-bleed darkened photography with a left-aligned headline at regular
- * weight, after the Conntour reference.
+ * After the Rappat exhibition-stand reference: a dark wall carrying the
+ * wordmark, a ribbon of light sweeping up to the right, and a stepped
+ * tagline with pill-set words.
  *
- * The live element in the hero is a sector selector rather than a
- * decorative search box. Each option is a real <Link>, so it works in the
- * prerendered HTML before hydration and is crawlable as internal linking.
+ * The reference's ribbon is a soft glowing gradient; here it is drawn in
+ * flat cyan strokes, keeping the palette flat.
+ *
+ * The site header floats transparent over the top of this section, so the
+ * section pads itself down by the header's height.
  */
-export function Hero({ sectors }: { sectors: Sector[] }) {
+export function Hero() {
+  const ref = useRef<HTMLElement>(null);
+  useDrift(ref);
+
   return (
-    <section className="on-dark relative isolate bg-navy-950 text-white overflow-hidden">
-      <Figure slot="home.hero" fill priority className="opacity-40" />
-      {/* Flat scrim, not a gradient. */}
-      <div aria-hidden="true" className="absolute inset-0 bg-navy-950/65" />
+    <section
+      ref={ref}
+      className="on-dark relative isolate overflow-hidden bg-navy-950 pt-(--header-h) text-white"
+    >
+      <Ribbon />
 
-      <Container className="relative py-24 lg:py-32">
-        <h1 className="text-display max-w-[17ch] text-balance">
-          Online database solutions for the operations that move people.
+      <Container
+        size="wide"
+        className="relative grid min-h-[min(calc(100svh-var(--header-h)),62rem)] py-12 sm:py-16"
+      >
+        {/* The {' '} nodes are collapsed by flex layout but keep the
+            accessible name reading "arepo Online database solutions". */}
+        <h1 className="flex flex-col justify-between gap-16">
+          <WordmarkType className="text-wordmark" />{" "}
+          <span className="flex flex-col items-start gap-2 text-h1">
+            <span className="flex flex-wrap items-center gap-x-[0.3em] gap-y-2">
+              Online <Pill>database</Pill>
+            </span>{" "}
+            <Pill>solutions</Pill>
+          </span>
         </h1>
-
-        <p className="mt-6 max-w-[54ch] text-lead text-white/80">
-          Arepo builds web-based database software for UK transport — bus, rail,
-          aviation, parking and enforcement. Trading since 1998, ISO 9001:2015
-          registered, fixed price.
-        </p>
-
-        <div className="mt-12">
-          <p id="sector-label" className="text-lead text-white/80">
-            I run&hellip;
-          </p>
-          <div
-            role="group"
-            aria-labelledby="sector-label"
-            className="mt-4 flex flex-wrap gap-3"
-          >
-            {sectors.map(sector => (
-              <Link
-                key={sector.id}
-                to={`/products/${sector.primary}`}
-                className="border border-cyan-500 px-4 py-2.5 text-base text-cyan-500 transition-colors hover:bg-cyan-500 hover:text-navy-950"
-              >
-                {sector.name}
-              </Link>
-            ))}
-          </div>
-        </div>
-
-        <div className="mt-12 flex flex-wrap gap-4">
-          <Button to="/products" variant="on-navy">
-            See the products
-          </Button>
-          <Button to="/contact" variant="ghost-on-navy">
-            Talk to us
-          </Button>
-        </div>
       </Container>
     </section>
-  )
+  );
 }

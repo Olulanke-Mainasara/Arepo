@@ -10,7 +10,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger'
  *   disabling the effect. Disabling would leave content invisible.
  * - Initial opacity comes from GSAP's fromTo, never from CSS. The routes
  *   are prerendered, so anything hidden in CSS would be invisible to a
- *   visitor whose JS has not run — and to anything reading the HTML.
+ *   visitor whose JS has not run, and to anything reading the HTML.
  * - ScrollTrigger is registered inside the effect, not at module scope:
  *   these modules are evaluated during build-time prerendering where
  *   there is no window.
@@ -70,6 +70,50 @@ export function useReveal(
 
     return () => mm.revert()
   }, [ref, stagger, y, start])
+}
+
+/**
+ * Slow looping sway for decorative layers marked `data-drift`, paused
+ * while the container is off screen. Reduced motion leaves them still:
+ * their resting position is already the finished composition, so nothing
+ * needs applying.
+ */
+export function useDrift(ref: RefObject<HTMLElement | null>) {
+  useEffect(() => {
+    const root = ref.current
+    if (!root) return
+
+    ensureRegistered()
+
+    const layers = root.querySelectorAll<HTMLElement>('[data-drift]')
+    if (layers.length === 0) return
+
+    const mm = gsap.matchMedia()
+
+    mm.add('(prefers-reduced-motion: no-preference)', () => {
+      layers.forEach((layer, i) => {
+        const odd = i % 2 === 1
+        gsap.to(layer, {
+          x: odd ? -10 : 0,
+          y: odd ? 16 : -12,
+          rotation: odd ? 0 : -0.6,
+          transformOrigin: '100% 100%',
+          duration: 8 + i * 1.5,
+          ease: 'sine.inOut',
+          repeat: -1,
+          yoyo: true,
+          scrollTrigger: {
+            trigger: root,
+            start: 'top bottom',
+            end: 'bottom top',
+            toggleActions: 'play pause resume pause',
+          },
+        })
+      })
+    })
+
+    return () => mm.revert()
+  }, [ref])
 }
 
 /**

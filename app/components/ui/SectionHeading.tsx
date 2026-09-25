@@ -1,6 +1,6 @@
 /**
  * The two-tone sentence device. One sentence, two weights of emphasis.
- * This replaces the all-caps kicker label used by the reference designs —
+ * This replaces the all-caps kicker label used by the reference designs:
  * it does the same orienting job without shouting a category name.
  */
 interface Props {

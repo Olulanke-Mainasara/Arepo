@@ -77,7 +77,7 @@ export async function submitContactForm(input: ContactInput): Promise<ContactRes
     return { ok: false, errors: { form: REJECTED } }
   }
 
-  // MOCK — replace this body with a real POST.
+  // MOCK: replace this body with a real POST.
   await new Promise(resolve => setTimeout(resolve, 800))
   return { ok: true }
 }

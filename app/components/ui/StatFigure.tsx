@@ -7,7 +7,7 @@ interface Props {
 export function StatFigure({ value, label, tone = 'light' }: Props) {
   return (
     <div>
-      <p className={`font-mono text-h2 ${tone === 'dark' ? 'text-cyan-500' : 'text-navy-800'}`}>
+      <p className={`text-h2 tabular-nums ${tone === 'dark' ? 'text-cyan-500' : 'text-navy-800'}`}>
         {value}
       </p>
       <p className={`mt-1 text-base ${tone === 'dark' ? 'text-white/70' : 'text-navy-600'}`}>

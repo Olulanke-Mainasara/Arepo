@@ -1,42 +1,38 @@
-import { Figure } from '~/components/ui/Figure'
 import { company } from '~/data/company'
 
+/** The live Contact page's "Get in touch" panel and "How to find us" note. */
 export function ContactDetails() {
-  const { address, phone, phoneHref, nearestStation, legalName } = company
+  const { address, phone, phoneHref, legalName, supportEmail, directions } = company
 
   return (
-    <div className="on-dark bg-navy-800 p-8 text-white lg:p-10">
+    <div className="on-dark rounded-3xl bg-navy-800 p-8 text-white lg:p-10">
       <h2 className="text-h2">Get in touch</h2>
 
+      <address className="mt-6 not-italic text-base leading-relaxed text-white/80">
+        <span className="text-lg text-cyan-500">{legalName}</span>
+        <br />
+        {address.street}
+        <br />
+        {address.locality}, {address.region}
+        <br />
+        {address.postcode}
+      </address>
+
+      <h3 className="mt-8 text-base font-medium">Sales &amp; Support</h3>
       <a
         href={phoneHref}
-        className="mt-6 block font-mono text-h3 text-cyan-500 hover:text-cyan-400"
+        className="mt-1 block text-h3 tabular-nums text-cyan-500 hover:text-cyan-400"
       >
         {phone}
       </a>
 
-      <div className="mt-8">
-        <h3 className="text-base font-medium">Visit us</h3>
-        <address className="mt-2 not-italic text-base leading-relaxed text-white/80">
-          {legalName}
-          <br />
-          {address.street}
-          <br />
-          {address.locality}, {address.region}
-          <br />
-          {address.postcode}
-          <br />
-          {address.country}
-        </address>
-        <p className="mt-3 font-mono text-xs text-white/60">
-          Nearest station: {nearestStation}
-        </p>
-      </div>
+      <h3 className="mt-6 text-base font-medium">Contact Support</h3>
+      <a href={`mailto:${supportEmail}`} className="mt-1 block text-base text-white/80 hover:text-cyan-400">
+        {supportEmail}
+      </a>
 
-      {/* A static figure, deliberately — no third-party map script, no API key. */}
-      <div className="mt-8">
-        <Figure slot="contact.location" className="border border-white/15" />
-      </div>
+      <h3 className="mt-8 text-base font-medium">How to find us</h3>
+      <p className="mt-1 text-base text-white/70">{directions}</p>
     </div>
   )
 }

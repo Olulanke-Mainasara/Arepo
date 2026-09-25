@@ -2,7 +2,7 @@ import type { ReactNode } from 'react'
 import { Link } from 'react-router'
 
 /**
- * Flat fills only — no gradient, no shadow.
+ * Flat fills only: no gradient, no shadow.
  * `on-navy` is the only variant using brand cyan as a surface, and it
  * pairs with navy-950 text at 8.58:1.
  */
@@ -14,14 +14,14 @@ const variants = {
 } as const
 
 const base =
-  'inline-flex items-center justify-center gap-2 px-5 py-3 text-base font-medium transition-colors duration-150'
+  'inline-flex items-center justify-center gap-2 rounded-[0.625rem] px-5 py-3 text-base font-medium transition-[background-color,border-color,color,scale] duration-150 ease-out active:scale-[0.97]'
 
 interface Props {
   children: ReactNode
   variant?: keyof typeof variants
-  /** Internal route — renders a react-router Link. */
+  /** Internal route: renders a react-router Link. */
   to?: string
-  /** External URL — renders an anchor with rel="noreferrer". */
+  /** External URL: renders an anchor with rel="noreferrer". */
   href?: string
   type?: 'button' | 'submit'
   onClick?: () => void

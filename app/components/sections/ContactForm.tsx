@@ -76,7 +76,7 @@ export function ContactForm() {
     return (
       <div className="border-2 border-navy-800 p-8">
         <h2 ref={successRef} tabIndex={-1} className="text-h2 text-navy-800">
-          Thank you — your message has been sent.
+          Thank you, your message has been sent.
         </h2>
         <p className="mt-4 max-w-[52ch] text-base text-navy-600">
           We will get back to you shortly. If it is urgent, call us on{' '}
@@ -176,6 +176,7 @@ export function ContactForm() {
           <textarea
             {...a11y}
             rows={6}
+            placeholder="Type your message here"
             className={controlClass}
             value={values.message}
             onChange={e => set('message', e.target.value)}
@@ -185,7 +186,7 @@ export function ContactForm() {
       </Field>
 
       {/*
-        Honeypot. sr-only rather than display:none — bots detect the latter.
+        Honeypot. sr-only rather than display:none, because bots detect the latter.
         Never announced, never tabbable, never autofilled.
       */}
       <div className="sr-only" aria-hidden="true">
@@ -253,7 +254,7 @@ export function ContactForm() {
         <Button type="submit" disabled={pending} aria-busy={pending}>
           {pending ? 'Sending…' : 'Send message'}
         </Button>
-        <p className="font-mono text-xs text-navy-600">We operate a no-spam policy.</p>
+        <p className="text-xs text-navy-600">We operate a no-spam policy.</p>
       </div>
     </form>
   )

@@ -41,12 +41,12 @@ for (const [fg, bg, min, why] of rules) {
   const r = ratio(tokens[fg], tokens[bg])
   const ok = r >= min
   if (!ok) failed++
-  console.log(`${ok ? 'PASS' : 'FAIL'}  ${fg.padEnd(9)} on ${bg.padEnd(9)} ${r.toFixed(2).padStart(5)}:1  (min ${min})  — ${why}`)
+  console.log(`${ok ? 'PASS' : 'FAIL'}  ${fg.padEnd(9)} on ${bg.padEnd(9)} ${r.toFixed(2).padStart(5)}:1  (min ${min})  - ${why}`)
 }
 
 // The defect this guard exists to prevent regressing.
 const brandCyanOnWhite = ratio(tokens['cyan-500'], '#FFFFFF')
-console.log(`\nnote  brand cyan-500 on white is ${brandCyanOnWhite.toFixed(2)}:1 — never use as text on light`)
+console.log(`\nnote  brand cyan-500 on white is ${brandCyanOnWhite.toFixed(2)}:1, never use as text on light`)
 
 if (failed) console.error(`\n${failed} contrast rule(s) failed`)
 process.exit(failed ? 1 : 0)

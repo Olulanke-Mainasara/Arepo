@@ -5,7 +5,7 @@ import { imageSlots } from '~/data/images'
  * photography exists, so adding a `src` later causes zero layout shift.
  *
  * While `src` is undefined it renders a flat navy block carrying the
- * subject brief — useful in review, and honest about what is missing.
+ * subject brief. Useful in review, and honest about what is missing.
  */
 interface Props {
   slot: string
@@ -40,7 +40,7 @@ export function Figure({ slot, className = '', priority = false, fill = false }:
     )
   }
 
-  // Decorative backgrounds carry no alt — the heading over them says it.
+  // Decorative backgrounds carry no alt; the heading over them says it.
   const a11y = fill
     ? { 'aria-hidden': true as const }
     : { role: 'img', 'aria-label': spec.alt }
@@ -52,7 +52,7 @@ export function Figure({ slot, className = '', priority = false, fill = false }:
       className={`bg-navy-900 flex items-end p-4 ${sizing} ${className}`}
       style={ratio}
     >
-      <span className="font-mono text-xs text-cyan-500/80 leading-snug">
+      <span className="text-xs text-cyan-500/80 leading-snug">
         {spec.subject}
       </span>
     </div>

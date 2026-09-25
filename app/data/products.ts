@@ -1,9 +1,13 @@
 import type { Product } from './types'
 
 /**
- * Every module item below is transcribed verbatim from the live Products
- * page. Do not paraphrase, reorder or add items — these are the client's
- * own product claims.
+ * Every module item and group title below is transcribed verbatim from the
+ * live Products page. Do not paraphrase, reorder or add items: these are
+ * the client's own product claims.
+ *
+ * Summaries come from the live Products page's "Online databases for"
+ * panel. Inkara has no panel entry, so its summary joins the three
+ * operations its module lists are headed with.
  */
 export const products: Product[] = [
   {
@@ -11,7 +15,7 @@ export const products: Product[] = [
     name: 'Tracerit®',
     tagline: 'Transport Operations Database',
     summary:
-      'Software for public transport providers, helping daily operations — from the incident report on the road to the compliance record behind it.',
+      'Manage the incident & accident process, log CCTV requests and asset management of ancillary hardware.',
     sectors: ['bus-coach', 'rail'],
     hasMobileApp: false,
     site: { label: 'tracerit.com', href: 'https://www.tracerit.com' },
@@ -19,7 +23,7 @@ export const products: Product[] = [
     moduleGroups: [
       {
         id: 'operations',
-        title: 'Daily operations',
+        title: 'Software for Public Transport providers, helping daily operations',
         items: [
           'Incident and Accident management',
           'CCTV incident recording and tracking',
@@ -36,7 +40,7 @@ export const products: Product[] = [
     name: 'Inkara',
     tagline: 'Parking, Environmental Enforcement and Revenue Protection Software',
     summary:
-      'One enforcement platform serving three different operations: car park operators, local authority environmental teams, and train and bus revenue protection.',
+      'Software for Car Park Operators, Environmental Enforcement, and Train and Bus Revenue Protection.',
     sectors: ['parking-enforcement', 'rail', 'bus-coach'],
     hasMobileApp: true,
     site: { label: 'inkara.com', href: 'https://www.inkara.com' },
@@ -58,7 +62,7 @@ export const products: Product[] = [
         title: 'Software for Environmental Enforcement',
         items: [
           'Mobile app to issue Fixed Penalty Notices',
-          'Flexible configuration providing FPN management of littering, dog fouling, fly tipping and commercial waste',
+          'Flexible configuration providing FPN management of: Littering, Dog Fouling, Fly tipping, Commercial Waste',
           'Back office suite for management and reporting',
           'Escalation of unpaid fines to magistrates courts',
           'Generation of Single Justice Packs and collation of evidence',
@@ -83,7 +87,7 @@ export const products: Product[] = [
     name: 'GOSS',
     tagline: 'The Ground Operations Software System',
     summary:
-      'Software for aviation ground services providers, built around the audit and accreditation work that keeps an operation airside.',
+      'Modular software assisting ISAGO accreditation, RIDDOR, delay reporting and lounge access.',
     sectors: ['aviation'],
     hasMobileApp: false,
     site: { label: 'ground-ops.com', href: 'https://www.ground-ops.com' },
@@ -92,7 +96,7 @@ export const products: Product[] = [
     moduleGroups: [
       {
         id: 'ground-operations',
-        title: 'Ground operations',
+        title: 'Software for aviation ground services providers',
         items: [
           'Incident recording for ISAGO',
           'Ramp and Flight Watch audits',
@@ -108,7 +112,7 @@ export const products: Product[] = [
     name: 'Cautus',
     tagline: 'Online Trade Mark (TM) Management',
     summary:
-      'Software for Trade Mark attorneys — a single register for marks, designs, domains and patents.',
+      'Easily manage a portfolio of Trade Marks, domain names, designs and patents.',
     sectors: ['ip-legal'],
     hasMobileApp: false,
     site: { label: 'cautus.co.uk', href: 'https://www.cautus.co.uk' },
@@ -116,7 +120,7 @@ export const products: Product[] = [
     moduleGroups: [
       {
         id: 'portfolio',
-        title: 'Portfolio management',
+        title: 'Software for Trade Mark (TM) Attorneys',
         items: [
           'Trade Mark management',
           'Design Registrations',

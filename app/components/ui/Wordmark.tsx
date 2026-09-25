@@ -1,38 +1,73 @@
 import { Link } from 'react-router'
+import { DOT, LETTERS } from '~/components/ui/logoPaths'
 import { company } from '~/data/company'
 
 /**
- * Reproduces the existing Arepo mark: heavy lowercase wordmark in navy
- * with a square cyan full stop, tagline beneath.
+ * The header logo: the live site's image.jpeg, letter for letter. The
+ * letters and dot are the traced vector, so they stay sharp and can
+ * change colour; the tagline beneath is too fine to trace, so it is the
+ * source's own pixels, cut into a transparent strip in two colours.
  *
- * This is an approximation set in Archivo — the original vector was not
- * supplied. Request the logo SVG from the client and swap this out; the
- * component boundary means nothing else changes.
+ * `tone` is the surface it sits on. Both tagline strips are always
+ * present and cross-fade, so switching tone never waits on a download.
  */
 interface Props {
   tone?: 'light' | 'dark'
-  showTagline?: boolean
+  className?: string
 }
 
-export function Wordmark({ tone = 'light', showTagline = true }: Props) {
-  const ink = tone === 'dark' ? 'text-white' : 'text-navy-800'
-  const sub = tone === 'dark' ? 'text-white/60' : 'text-navy-600'
+export function Wordmark({ tone = 'light', className = '' }: Props) {
+  const dark = tone === 'dark'
 
   return (
-    <Link to="/" className="inline-block group" aria-label={`${company.legalName} — home`}>
-      <span className={`flex items-end gap-[0.1em] text-[1.75rem] leading-none font-display ${ink}`}>
-        <span style={{ fontWeight: 800, letterSpacing: '-0.045em' }}>arepo</span>
-        <span
-          aria-hidden="true"
-          className="bg-cyan-500 mb-[0.12em]"
-          style={{ width: '0.19em', height: '0.19em' }}
+    <Link to="/" className={`block ${className}`} aria-label={`${company.legalName}, home`}>
+      <svg
+        viewBox="3 2.8 194 74.4"
+        aria-hidden="true"
+        className={`block h-full w-auto transition-colors duration-300 ease-out ${
+          dark ? 'text-white' : 'text-navy-800'
+        }`}
+        style={{ aspectRatio: '194 / 74.4' }}
+      >
+        <path d={LETTERS} fill="currentColor" fillRule="evenodd" />
+        <path d={DOT} className="fill-cyan-500" />
+        <image
+          href="/images/logo/tagline-on-light.png"
+          x="0"
+          y="62"
+          width="200"
+          height="18"
+          className={`transition-opacity duration-300 ease-out ${dark ? 'opacity-0' : 'opacity-100'}`}
         />
-      </span>
-      {showTagline && (
-        <span className={`mt-1 hidden sm:block text-[0.6875rem] tracking-wide ${sub}`}>
-          {company.tagline}
-        </span>
-      )}
+        <image
+          href="/images/logo/tagline-on-dark.png"
+          x="0"
+          y="62"
+          width="200"
+          height="18"
+          className={`transition-opacity duration-300 ease-out ${dark ? 'opacity-100' : 'opacity-0'}`}
+        />
+      </svg>
     </Link>
+  )
+}
+
+/**
+ * The letters and cut-corner full stop alone, scaled by the parent's
+ * font-size: 3.1em wide, the width the home hero is laid out around.
+ * Letters take the current text colour.
+ */
+export function WordmarkType({ className = '' }: { className?: string }) {
+  return (
+    <svg
+      viewBox="3.1 2.85 193.8 58.9"
+      role="img"
+      aria-label="arepo"
+      className={`block h-auto ${className}`}
+      style={{ width: '3.1em', aspectRatio: '193.8 / 58.9' }}
+    >
+      <path d={LETTERS} fill="currentColor" fillRule="evenodd" />
+      <path d={DOT} className="fill-cyan-500" />
+    </svg>
   )
 }

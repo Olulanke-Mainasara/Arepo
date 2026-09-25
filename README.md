@@ -1,10 +1,10 @@
-# Arepo Solutions — website
+# Arepo Solutions website
 
-A rebuild of arepo.co.uk. Nine routes, responsive, WCAG AA, prerendered to
+A rebuild of arepo.com. Nine routes, responsive, WCAG AA, prerendered to
 static HTML at build time.
 
 Arepo Solutions Ltd builds web-based database software for the UK transport
-industry — bus, rail, aviation, parking and enforcement.
+industry: bus, rail, aviation, parking and enforcement.
 
 ## Commands
 
@@ -18,7 +18,7 @@ npm run check:contrast   # asserts the shipped colour tokens meet WCAG AA
 ```
 
 `npm run build` emits static files to `build/client`. There is no runtime
-server — deploy the folder to any static host.
+server. Deploy the folder to any static host.
 
 ## Stack
 
@@ -29,7 +29,7 @@ framework mode (`ssr: false` + `prerender`) · Tailwind CSS 4 · GSAP 3 · oxlin
 
 React Router 8.4 declares `engines.node >= 22.22.0`. On older Node you will see
 `EBADENGINE` warnings and an "Oops, Node vX detected" banner during install,
-typegen and build. **These are warnings only** — everything works. Upgrade Node
+typegen and build. **These are warnings only**; everything works. Upgrade Node
 to 22.22+ to silence them.
 
 ## Where things live
@@ -49,7 +49,7 @@ scripts/                 contrast guard, sitemap generator
 
 ### Content
 
-All copy lives in `app/data/`. Components never import fixtures directly —
+All copy lives in `app/data/`. Components never import fixtures directly;
 they go through the async getters in `app/lib/content.ts`, which is the seam a
 CMS would replace. Route `loader`s call those getters, and because every route
 is prerendered, loaders run at build time and the HTML ships with real content.
@@ -77,7 +77,7 @@ matching slot. Nothing else changes and no layout shifts.
 ## Wiring up a real contact form
 
 `app/lib/contact.ts` exports `submitContactForm`, which currently resolves
-after a simulated delay. Replace that one function body with a real POST — the
+after a simulated delay. Replace that one function body with a real POST; the
 signature, the validation and the UI do not change.
 
 The form uses a honeypot field plus a minimum fill time instead of a CAPTCHA.
@@ -96,29 +96,25 @@ These are gaps in the source material, left empty rather than invented:
    1998"; the footer badge says "25 YEARS / 1999–2024". Both cannot be right,
    and the badge is stale regardless. The site derives everything from
    `foundedYear: 1998` in `app/data/company.ts`. Confirm which is correct.
-2. **Testimonials.** The live site links to a testimonials page, but none of
-   its copy was available. `app/data/testimonials.ts` is an empty array and the
-   carousel renders nothing. Supply the quotes and it appears.
-3. **Client logos.** No logo files were supplied, so the logo wall and client
-   grid set names as type. This is Arepo's strongest asset — SVGs would make a
-   real difference.
-4. **Logo vector.** The `arepo.` wordmark is reproduced in Archivo as an
-   approximation. Ask for the original SVG; it is a one-component swap in
-   `app/components/ui/Wordmark.tsx`.
-5. **Per-product deployment.** The live site describes deployment only in
-   general terms ("deployed on your servers or provided as hosted solutions"),
-   never per product, so the comparison table has no deployment column. If the
-   detail exists, it is one field in `app/data/products.ts`.
+2. **Image resolution.** Every image is the file the live site serves, saved
+   in `public/images`: client logos 109 to 200px wide, home banners 964×324,
+   product banners 465×156 with text set into them. They are shown no larger
+   than that. Ask for larger originals, and SVGs of the client logos.
+4. **Logo vector.** The logo is traced from the live site's 200×80 header
+   image (`app/components/ui/logoPaths.ts`, 99.3% pixel match) and its
+   tagline is that image's own pixels. Ask for the original SVG and swap it
+   into `app/components/ui/Wordmark.tsx`.
+5. **Testimonials.** Five quotes are taken from the live testimonials pages,
+   some shortened (see `app/data/testimonials.ts`). The full pages have more.
 
 ## Out of scope
 
 Deferred from the live site: individual case study pages, news index and
-articles, and standalone Our Clients / Development Tools / Our Approach /
-Careers / Support pages, plus the legal pages (Disclaimer, Terms and
-Conditions, Cookie Policy, Sitemap). These render as unlinked text in the
-footer rather than pointing somewhere misleading. Privacy links out to the
-live site, because the contact form's consent checkbox must reference a real
-policy.
+articles, the full Our Clients page (around 70 logos), and the online
+database benefit pages (Key Benefits, Value For Money, Revenue Enhancements,
+Cost Savings). The legal pages (Disclaimer, Privacy, Terms and Conditions,
+Cookie Policy) link out to the live site until they are rebuilt here;
+Sitemap renders as unlinked text.
 
-Also out of scope: backend, CMS, email delivery, photography, the Google
-Translate widget, and any test suite.
+Also out of scope: backend, CMS, email delivery, the Google Translate
+widget, and any test suite.

@@ -9,17 +9,17 @@ export function AccreditationBlock() {
       <Container>
         <div className="grid gap-10 md:grid-cols-3">
           <div>
-            <p className="font-mono text-h3 text-cyan-500">{accreditation.standard}</p>
+            <p className="text-h3 tabular-nums text-cyan-500">{accreditation.standard}</p>
             <p className="mt-2 text-base text-white/70">Quality management standard</p>
           </div>
           <div>
-            <p className="font-mono text-h3 text-cyan-500">
+            <p className="text-h3 tabular-nums text-cyan-500">
               {accreditation.certificateNumber}
             </p>
             <p className="mt-2 text-base text-white/70">Certificate number</p>
           </div>
           <div>
-            <p className="font-mono text-h3 text-cyan-500">{foundedYear}</p>
+            <p className="text-h3 tabular-nums text-cyan-500">{foundedYear}</p>
             <p className="mt-2 text-base text-white/70">
               {legalName} formed in London
             </p>

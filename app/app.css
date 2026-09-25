@@ -1,6 +1,5 @@
 @import "tailwindcss";
 @import "@fontsource-variable/archivo";
-@import "@fontsource-variable/geist-mono";
 
 @theme {
   --color-navy-950: #000F1C;
@@ -16,8 +15,8 @@
   --color-paper: #F6F8FA;
 
   --font-display: "Archivo Variable", ui-sans-serif, system-ui, sans-serif;
-  --font-mono: "Geist Mono Variable", ui-monospace, monospace;
 
+  --text-wordmark: clamp(5rem, 1rem + 16vw, 13.5rem);
   --text-display: clamp(2.5rem, 1.6rem + 3.6vw, 4rem);
   --text-h1: clamp(2rem, 1.4rem + 2.4vw, 3rem);
   --text-h2: clamp(1.625rem, 1.3rem + 1.4vw, 2.25rem);
@@ -26,10 +25,16 @@
   --text-body: 1.125rem;
 }
 
+/* The fixed header's height. Page tops pad themselves down by it. */
+:root {
+  --header-h: 4.5rem;
+}
+
 @layer base {
   html {
     -webkit-text-size-adjust: 100%;
     scroll-behavior: smooth;
+    scroll-padding-top: var(--header-h);
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -64,23 +69,19 @@
 }
 
 @layer components {
-  /* Logo wall marquee. Duplicated content scrolls exactly half its width. */
-  .marquee {
-    animation: marquee-scroll 42s linear infinite;
+  /* The favicon's chipped corner, cut from a card's top-left or top-right.
+     The polygon covers every other corner in full, so those keep their
+     border-radius. */
+  .chip-tl,
+  .chip-tr {
+    --chip: clamp(3rem, 7vw, 6.5rem);
   }
 
-  .marquee:hover {
-    animation-play-state: paused;
+  .chip-tl {
+    clip-path: polygon(var(--chip) 0, 100% 0, 100% 100%, 0 100%, 0 var(--chip));
   }
 
-  @media (prefers-reduced-motion: reduce) {
-    .marquee {
-      animation: none;
-    }
-  }
-
-  @keyframes marquee-scroll {
-    from { transform: translate3d(0, 0, 0); }
-    to { transform: translate3d(-50%, 0, 0); }
+  .chip-tr {
+    clip-path: polygon(0 0, calc(100% - var(--chip)) 0, 100% var(--chip), 100% 100%, 0 100%);
   }
 }
