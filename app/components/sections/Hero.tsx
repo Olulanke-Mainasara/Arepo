@@ -32,8 +32,10 @@ export function Hero() {
         className="relative grid min-h-[min(calc(100svh-var(--header-h)),62rem)] py-12 sm:py-16"
       >
         {/* The {' '} nodes are collapsed by flex layout but keep the
-            accessible name reading "arepo Online database solutions". */}
-        <h1 className="flex flex-col justify-between gap-16">
+            accessible name reading "arepo Online database solutions".
+            Below lg the tagline sits straight under the wordmark; from lg
+            it drops to the foot of the hero. */}
+        <h1 className="flex flex-col gap-6 lg:justify-between lg:gap-16">
           <WordmarkType className="text-wordmark" />{" "}
           <span className="flex flex-col items-start gap-2 text-h1">
             <span className="flex flex-wrap items-center gap-x-[0.3em] gap-y-2">
