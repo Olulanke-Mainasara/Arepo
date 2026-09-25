@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import { isRouteErrorResponse, Links, Meta, Outlet, Scripts, ScrollRestoration } from 'react-router'
 import type { Route } from './+types/root'
 import { SiteFooter } from '~/components/sections/SiteFooter'
@@ -5,12 +6,18 @@ import { SiteHeader } from '~/components/sections/SiteHeader'
 import { Button } from '~/components/ui/Button'
 import { Container } from '~/components/ui/Container'
 import { jsonLdScript, organizationJsonLd } from '~/lib/seo'
+import { registerServiceWorker } from '~/lib/serviceWorker'
 import './app.css'
 
-/** The live site's favicon: the square full stop from the wordmark. */
+/**
+ * The live site's favicon: the square full stop from the wordmark. The
+ * installed-app icons are the whole wordmark (scripts/build-icons.mjs).
+ */
 export const links: Route.LinksFunction = () => [
   { rel: 'icon', href: '/favicon.ico', sizes: '32x32' },
   { rel: 'icon', href: '/favicon.svg', type: 'image/svg+xml' },
+  { rel: 'apple-touch-icon', href: '/apple-touch-icon.png' },
+  { rel: 'manifest', href: '/manifest.webmanifest' },
 ]
 
 export function Layout({ children }: { children: React.ReactNode }) {
@@ -19,6 +26,9 @@ export function Layout({ children }: { children: React.ReactNode }) {
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
+        {/* navy-950, the colour at the top of every page, under the transparent header. */}
+        <meta name="theme-color" content="#000F1C" />
+        <meta name="apple-mobile-web-app-title" content="Arepo" />
         <Meta />
         <Links />
         <script
@@ -46,6 +56,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
 }
 
 export default function App() {
+  useEffect(registerServiceWorker, [])
   return <Outlet />
 }
 

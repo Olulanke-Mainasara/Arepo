@@ -11,10 +11,11 @@ industry: bus, rail, aviation, parking and enforcement.
 ```bash
 npm install
 npm run dev          # dev server
-npm run build        # prerenders 9 routes + writes sitemap.xml
+npm run build        # prerenders 9 routes + writes sitemap.xml and sw.js
 npm run typecheck    # react-router typegen && tsc
 npm run lint         # oxlint
 npm run check:contrast   # asserts the shipped colour tokens meet WCAG AA
+npm run icons        # re-renders the app icons from the logo vector (needs Chrome)
 ```
 
 `npm run build` emits static files to `build/client`. There is no runtime
@@ -41,10 +42,11 @@ app/routes.ts            route manifest
 app/app.css              Tailwind entry + the @theme design tokens
 app/routes/              one file per route (loader + meta + component)
 app/data/                all site content, as typed fixtures
-app/lib/                 content.ts, contact.ts, seo.ts, motion.ts
+app/lib/                 content.ts, contact.ts, seo.ts, motion.ts, serviceWorker.ts
+app/sw.js                the service worker; the build fills in its precache list
 app/components/ui/       primitives with no content knowledge
 app/components/sections/ composed sections
-scripts/                 contrast guard, sitemap generator
+scripts/                 contrast guard, sitemap, service worker and icon builders
 ```
 
 ### Content
@@ -83,10 +85,39 @@ signature, the validation and the UI do not change.
 The form uses a honeypot field plus a minimum fill time instead of a CAPTCHA.
 Keep both; they cost nothing and they work server-side too.
 
+## Offline and install (PWA)
+
+The site installs as an app and works offline. `public/manifest.webmanifest`
+names it and points at the icons; `app/sw.js` is the service worker.
+
+The Vite PWA plugins can't precache a React Router prerendered build: they
+run before the HTML is written. So `npm run build` finishes with
+`scripts/build-sw.mjs`, which walks `build/client`, like the sitemap script,
+and writes `build/client/sw.js` with every built file in its precache list
+and a hash of their contents as its version. A deploy that changes any file
+installs a new worker; one that changes nothing does not.
+
+- **Pages and `.data`** are network first, so visitors always get the
+  current deploy. Offline, or after 3 seconds without an answer, the worker
+  serves the precached copy.
+- **Scripts, fonts and images** are served from the cache.
+- A new worker takes over as soon as it has precached the new build, and
+  deletes the old one's cache.
+
+The worker registers in production only. To try it, `npm run build &&
+npm start`, then look under DevTools › Application.
+
+The app icons are the wordmark on brand navy, rendered from
+`app/components/ui/logoPaths.ts`. When the original logo SVG arrives (open
+question 4), swap it in and run `npm run icons`.
+
 ## Deployment note
 
 Because unmatched paths resolve client-side, configure the host to serve
 `build/client/index.html` for its 404 so the styled not-found page renders.
+
+Service workers need HTTPS (localhost is exempt). Don't give `sw.js` a
+long `Cache-Control` max-age; `no-cache` is safest.
 
 ## Open questions for the client
 
